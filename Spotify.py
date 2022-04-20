@@ -30,99 +30,99 @@ print('Last modification date:', time.ctime(os.path.getctime('Spotify 2010 - 201
 spotify_csv.info()
 
 
-# In[ ]:
+# In[4]:
 
 
 display(spotify_csv.iloc[1:11])
 
 
-# In[ ]:
+# In[5]:
 
 
 display(spotify_csv[['title','duration']])
 
 
-# In[ ]:
+# In[6]:
 
 
 spotify_csv.duration.describe()
 
 
-# In[ ]:
+# In[7]:
 
 
 spotify_csv.sort_values(['beats per minute'], ascending = 0) 
 
 
-# In[ ]:
+# In[8]:
 
 
 spotify_csv.loc[(spotify_csv['top year'] == 2019)]
 
 
-# In[ ]:
+# In[9]:
 
 
 spotify_csv.loc[(spotify_csv['popularity'] < 50)]
 
 
-# In[ ]:
+# In[10]:
 
 
 songs_to_dance = spotify_csv.title.loc[spotify_csv['danceability rate'] >= 70] 
 songs_to_dance.count()
 
 
-# In[ ]:
+# In[11]:
 
 
 spotify_csv.loc[(spotify_csv['acoustic rate'] == spotify_csv['acoustic rate'].max())]
 
 
-# In[ ]:
+# In[12]:
 
 
 spotify_csv.loc[(spotify_csv['acoustic rate'] == spotify_csv['acoustic rate'].min())]
 
 
-# In[ ]:
+# In[13]:
 
 
 spotify_csv[(spotify_csv['genre'].str.contains('hip hop') | (spotify_csv['genre'].str.contains('pop')) 
     & spotify_csv['artist type'].str.contains('Solo'))]
 
 
-# In[ ]:
+# In[14]:
 
 
 spotify_csv.groupby(['artist type']).mean()
 
 
-# In[ ]:
+# In[15]:
 
 
 spotify_csv.sort_values(by = ['date added to list'], ascending = 0) 
 
 
-# In[ ]:
+# In[16]:
 
 
 spotify_csv.groupby(['genre']).sum()
 
 
-# In[ ]:
+# In[17]:
 
 
 spotify_csv.groupby(['top year']).count()
 
 
-# In[ ]:
+# In[18]:
 
 
 spotify_csv['beats per minute'].hist()
 
 
-# In[ ]:
+# In[19]:
 
 
 def search_songs_by_duration_range(min_duration, max_duration):
@@ -133,7 +133,7 @@ def search_songs_by_duration_range(min_duration, max_duration):
 search_songs_by_duration_range(100, 220)
 
 
-# In[ ]:
+# In[20]:
 
 
 def search_songs_by_genre(genre_to_find):
@@ -142,7 +142,7 @@ def search_songs_by_genre(genre_to_find):
 search_songs_by_genre('dance pop')
 
 
-# In[ ]:
+# In[21]:
 
 
 def search_songs_by_title_keyword(keyword):
@@ -151,7 +151,7 @@ def search_songs_by_title_keyword(keyword):
 search_songs_by_title_keyword('You')
 
 
-# In[ ]:
+# In[22]:
 
 
 def convert_csv_to_json(csv_file_path, json_file_path):
@@ -171,40 +171,40 @@ json_file_path = r'SpotifyTop100Songs.json'
 convert_csv_to_json(csv_file_path, json_file_path)
 
 
-# In[4]:
+# In[23]:
 
 
 spotify_json = pd.read_json('SpotifyTop100Songs.json', encoding = 'utf-8')
 
 
-# In[5]:
+# In[24]:
 
 
 mongo_client = MongoClient('mongodb://localhost:27017')
 spotify_database = mongo_client['SpotifyTop100Songs']
 
 
-# In[6]:
+# In[25]:
 
 
 songs_collection = spotify_database.Top100SpotifySongs
 songs_dict = spotify_json.to_dict('records')
 
 
-# In[7]:
+# In[26]:
 
 
 songs_collection.insert_many(songs_dict)
 
 
-# In[8]:
+# In[27]:
 
 
 all_docs_number = songs_collection.count_documents({})
 print('The total number of documents in Top100SpotifySongs collection:', all_docs_number) 
 
 
-# In[ ]:
+# In[28]:
 
 
 first_100_songs = songs_collection.find({}).limit(100)
@@ -212,7 +212,7 @@ for song in first_100_songs:
     print(song)
 
 
-# In[ ]:
+# In[29]:
 
 
 edm_songs = songs_collection.find({'genre':'edm'})
@@ -220,7 +220,7 @@ for edm_song in edm_songs:
     display(edm_song) 
 
 
-# In[ ]:
+# In[30]:
 
 
 loud_songs = songs_collection.find({'decibel':{'$lt':-5}, 'beats per minute':{'$gt': 100}}).sort('beats per minute', -1)
@@ -228,7 +228,7 @@ for loud_song in loud_songs:
     display(loud_song) 
 
 
-# In[ ]:
+# In[31]:
 
 
 year2016_or_more_songs = songs_collection.find({'year released':{'$gte':2016}}).sort('year released')
@@ -236,7 +236,7 @@ for year2016_or_more_song in year2016_or_more_songs:
     display(year2016_or_more_song) 
 
 
-# In[ ]:
+# In[32]:
 
 
 group_songs = songs_collection.find({'artist type':{'$ne':'Solo'}})
@@ -244,7 +244,7 @@ for group_song in group_songs:
     display(group_song) 
 
 
-# In[20]:
+# In[33]:
 
 
 rihanna_songs = songs_collection.find({'artist':{'$in':['Rihanna']}})
@@ -252,7 +252,7 @@ for rihanna_song in rihanna_songs:
     display(rihanna_song) 
 
 
-# In[ ]:
+# In[34]:
 
 
 no_pop_songs = songs_collection.find({'genre':{'$nin':['dance pop', 'pop soul','pop rap', 'art pop', 'pop', 'barbadian pop',
@@ -262,7 +262,7 @@ for no_pop_song in no_pop_songs:
     print(no_pop_song)
 
 
-# In[ ]:
+# In[35]:
 
 
 solo_and_duo_songs = songs_collection.find({'$nor':[{'artist type': 'Band/Group'}, {'artist type': 'Trio'}]})
@@ -270,7 +270,7 @@ for solo_and_duo_song in solo_and_duo_songs:
     print(solo_and_duo_song)                                      
 
 
-# In[ ]:
+# In[36]:
 
 
 year_2018_and_2019_songs = songs_collection.find({'$or':[{'top year': 2018}, {'top year': 2019}]})
@@ -278,7 +278,7 @@ for year_2018_and_2019_song in year_2018_and_2019_songs:
     print(year_2018_and_2019_song)    
 
 
-# In[16]:
+# In[37]:
 
 
 query = { 
@@ -303,10 +303,3 @@ ax.set_ylabel('Popularity')
 ax.set_zlabel('Duration')
   
 plt.show()
-
-
-# In[23]:
-
-
-#songs_collection.drop()
-
